@@ -2,17 +2,16 @@
 {% block content %}
 <h2>REKII TOOL ONLINE</h2>
 
-<form action="process/" method="post">
-    {% csrf_token %}
-    <label for="host-ip">Host IP:</label>
-    <input type="text" id="host-ip" name="host-ip" placeholder='http://localhost:5173'>
-    
-    <label for="schema-name">Schema name:</label>
-    <input type="text" id="schema-name" name="schema-name" placeholder='http://localhost:5173'> <br /> <br />
-    
 
-    <h5>SCHEMA INPUT</h5>
+<label for="host-ip">Host IP:</label>
+<input type="text" id="host-ip" name="host-ip" placeholder='http://localhost:5173'>
 
+<label for="schema-name">Schema name:</label>
+<input type="text" id="schema-name" name="schema-name" placeholder='http://localhost:5173'> <br /> <br />
+
+<h5>SCHEMA INPUT <button id="duplicateButton">Add schema input</button></h5> 
+
+<div id='schema-input-container'>
     <label for="element-type">Choose Element Type or Redirect:</label>
     <select id="element-type" name="element-type">
         <option value="none">Please Choose</option>
@@ -20,7 +19,7 @@
             <option value="{{ i }}">{{ i }}</option>
         {% endfor %}
     </select>
- 
+
     <label for="url-value">Url target:</label>
     <input type="text" id="url-value" name="url-value" />
 
@@ -44,17 +43,18 @@
         <option value="click">click</option>
         <option value="enter">enter</option>
     </select>
-    
+
 
     <label for="time-wait">Time wait(s):</label>
     <input type="text" id="time-wait" style='width:50px' name="time-wait" />
+</div>
 
-    <h5>SCHEMA OUTPUT</h5>
+<h5>SCHEMA OUTPUT</h5>
 
-    <input type="submit" value="Submit">
+<input type="submit" value="Submit">
 
 
-</form>
+
 <script>
     let dropdown = document.getElementById("element-type");
     dropdown.addEventListener("change", function() {
@@ -105,6 +105,32 @@
     }
 
   });
+</script>
+
+<script>
+    var duplicateButton = document.getElementById("duplicateButton");
+    var schemaContainer = document.getElementById("schema-input-container");
+    var counter = 1; // Counter for auto-incrementing the names
+
+    duplicateButton.addEventListener("click", function() {
+    var clonedSchema = schemaContainer.cloneNode(true);
+        updateIds(clonedSchema); // Update the ids in the cloned schema
+        schemaContainer.parentNode.insertBefore(clonedSchema, schemaContainer.nextSibling);
+    });
+
+    function updateIds(element) {
+    // Get all the elements with 'id' attribute
+    var elements = element.querySelectorAll('[id]');
+
+    // Loop through the elements and update their ids
+    elements.forEach(function(el) {
+        var currentId = el.getAttribute('id');
+        var newId = currentId + '-' + counter;
+        el.setAttribute('id', newId);
+    });
+
+    counter++; // Increment the counter for the next duplication
+    }
 </script>
 
 {%endblock content %}
